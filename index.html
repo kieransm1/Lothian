@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Lothian Driver Application</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #ffffff;
+        margin: 0;
+        padding: 0;
+        color: #333;
+    }
+
+    header {
+        background: #A50034;
+        color: white;
+        padding: 20px;
+        text-align: center;
+        border-bottom: 6px solid #C5A253;
+    }
+
+    header img {
+        height: 80px;
+        margin-bottom: 10px;
+    }
+
+    .container {
+        width: 90%;
+        max-width: 900px;
+        margin: 30px auto;
+        background: #f9f9f9;
+        padding: 25px;
+        border-radius: 10px;
+        border: 2px solid #C5A253;
+    }
+
+    h2 {
+        color: #A50034;
+        border-left: 6px solid #C5A253;
+        padding-left: 10px;
+    }
+
+    .step {
+        display: none;
+    }
+
+    .step.active {
+        display: block;
+    }
+
+    label {
+        font-weight: bold;
+        margin-top: 10px;
+        display: block;
+    }
+
+    input, select, textarea {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+    }
+
+    textarea {
+        height: 120px;
+    }
+
+    .buttons {
+        margin-top: 20px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    button {
+        background: #A50034;
+        color: white;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 16px;
+        border-bottom: 4px solid #7a0026;
+    }
+
+    button:hover {
+        background: #C5A253;
+        border-bottom: 4px solid #8f6a2f;
+    }
+
+    #summary-box {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        border: 2px solid #A50034;
+    }
+
+    footer {
+        margin-top: 40px;
+        text-align: center;
+        padding: 20px;
+        background: #A50034;
+        color: white;
+        border-top: 6px solid #C5A253;
+    }
+</style>
+</head>
+
+<body>
+
+<header>
+    <!-- INSERT LOTHIAN LOGO HERE -->
+    <h1>Lothian Driver Application</h1>
+</header>
+
+<div class="container">
+
+    <!-- STEP 1 -->
+    <div class="step active" id="step1">
+        <h2>Applicant Information</h2>
+
+        <label>Roblox Username</label>
+        <input id="robloxUser">
+
+        <label>Roblox Display Name</label>
+        <input id="robloxDisplay">
+
+        <label>Discord Username</label>
+        <input id="discordUser">
+
+        <label>Operator</label>
+        <select id="operator">
+            <option value="Lothian">Lothian</option>
+            <option value="Lothian Country">Lothian Country</option>
+            <option value="Lothian Motorcoaches">Lothian Motorcoaches</option>
+        </select>
+
+        <label>Depot</label>
+        <input id="depot">
+
+        <div class="buttons">
+            <button onclick="nextStep(2)">Continue</button>
+        </div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="step" id="step2">
+        <h2>Motivation & Suitability</h2>
+
+        <label>Why do you want to join Lothian?</label>
+        <textarea id="q1"></textarea>
+
+        <label>Why should we choose you over other applicants?</label>
+        <textarea id="q2"></textarea>
+
+        <label>What skills and qualities do you bring?</label>
+        <textarea id="q3"></textarea>
+
+        <div class="buttons">
+            <button onclick="prevStep(1)">Back</button>
+            <button onclick="nextStep(3)">Continue</button>
+        </div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="step" id="step3">
+        <h2>Experience & Requirements</h2>
+
+        <label>Do you have bus industry experience (Roblox or real life)?</label>
+        <textarea id="q4"></textarea>
+
+        <label>Do you meet all eligibility requirements?</label>
+        <textarea id="q5"></textarea>
+
+        <label>Are you willing to complete PCV & CPC training?</label>
+        <textarea id="q6"></textarea>
+
+        <label>Are you prepared to deal with passengers professionally?</label>
+        <textarea id="q7"></textarea>
+
+        <label>Have you worked with Lothian before?</label>
+        <textarea id="q8"></textarea>
+
+        <div class="buttons">
+            <button onclick="prevStep(2)">Back</button>
+            <button onclick="nextStep(4)">Continue</button>
+        </div>
+    </div>
+
+    <!-- STEP 4 SUMMARY -->
+    <div class="step" id="step4">
+        <h2>Summary</h2>
+        <div id="summary-box"></div>
+
+        <div class="buttons">
+            <button onclick="prevStep(3)">Back</button>
+            <button onclick="downloadApplication()">Download</button>
+            <button onclick="sendWebhook()">Submit</button>
+        </div>
+    </div>
+
+</div>
+
+<footer>
+    © Lothian Buses – Driver Recruitment
+</footer>
+
+<script>
+function nextStep(step) {
+    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+    document.getElementById('step' + step).classList.add('active');
+
+    if (step === 4) generateSummary();
+}
+
+function prevStep(step) {
+    nextStep(step);
+}
+
+function generateSummary() {
+    let summary = `
+        <h3>Applicant Summary</h3>
+        <p><strong>Roblox Username:</strong> ${robloxUser.value}</p>
+        <p><strong>Display Name:</strong> ${robloxDisplay.value}</p>
+        <p><strong>Discord:</strong> ${discordUser.value}</p>
+        <p><strong>Operator:</strong> ${operator.value}</p>
+        <p><strong>Depot:</strong> ${depot.value}</p>
+        <hr>
+        <p><strong>Why Lothian:</strong> ${q1.value}</p>
+        <p><strong>Why You:</strong> ${q2.value}</p>
+        <p><strong>Skills:</strong> ${q3.value}</p>
+        <p><strong>Experience:</strong> ${q4.value}</p>
+        <p><strong>Requirements:</strong> ${q5.value}</p>
+        <p><strong>PCV & CPC:</strong> ${q6.value}</p>
+        <p><strong>Passengers:</strong> ${q7.value}</p>
+        <p><strong>Previous Work:</strong> ${q8.value}</p>
+    `;
+    document.getElementById('summary-box').innerHTML = summary;
+}
+
+function downloadApplication() {
+    let text = document.getElementById('summary-box').innerText;
+    let blob = new Blob([text], { type: "text/plain" });
+    let link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "Lothian_Application.txt";
+    link.click();
+}
+
+function sendWebhook() {
+    let payload = {
+        content: "New Lothian Driver Application",
+        embeds: [{
+            title: "Applicant Summary",
+            color: 16711680,
+            description: document.getElementById('summary-box').innerText
+        }]
+    };
+
+    fetch("https://discord.com/api/webhooks/1528422684839645285/GDORLxnuJTIGqv_OD0w86gWgL73Y4RE_E8u8_pNytc6sfEWtYQa712RIAF5_pUPXyOvF", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+    });
+
+    alert("Application submitted!");
+}
+</script>
+
+</body>
+</html>
